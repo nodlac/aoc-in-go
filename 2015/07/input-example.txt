@@ -1,0 +1,12 @@
+6 -> y
+x OR y -> e
+sj -> a
+x LSHIFT 2 -> f
+y RSHIFT 2 -> g
+NOT d -> h
+NOT y -> i
+1 AND h -> w
+x -> z
+d AND w -> sj
+x AND y -> d
+3 -> x
