@@ -1,16 +1,34 @@
 package main
 
 import (
-	"github.com/jpillora/puzzler/harness/aoc"
 	"bufio"
 	"fmt"
-	"strings"
+	"github.com/jpillora/puzzler/harness/aoc"
 	"strconv"
+	"strings"
 )
 
 type node struct {
-	name string
+	name  string
 	edges map[string]int
+}
+
+func getPermutations(keyList []string, slots int) [][]string {
+	if slots <= 0 {
+		return [][]string{{}}
+	}
+	var permuts [][]string
+	for i := 0; i < len(keyList); i++ {
+		newKeyList := make([]string, 0, len(keyList)-1)
+		newKeyList = append(newKeyList, keyList[:i]...)
+		newKeyList = append(newKeyList, keyList[i+1:]...)
+		nextPermuts := getPermutations(newKeyList, slots-1)
+		for p := range nextPermuts {
+			nextPermuts[p] = append([]string{keyList[i]}, nextPermuts[p]...)
+		}
+		permuts = (append(permuts, nextPermuts...))
+	}
+	return permuts
 }
 
 func main() {
@@ -34,7 +52,6 @@ func run(part2 bool, input string) any {
 
 	for scanner.Scan() {
 		line := scanner.Text()
-		fmt.Println(line)
 		expressions := strings.Split(line, " = ")
 		dist, err := strconv.Atoi(expressions[1])
 		if err != nil {
@@ -44,25 +61,40 @@ func run(part2 bool, input string) any {
 		locations := strings.Split(expressions[0], " to ")
 
 		if nodeMap[locations[0]].name == "" {
-			nodeMap[locations[0]] = node{name: locations[0], edges:make(map[string]int)}
+			nodeMap[locations[0]] = node{name: locations[0], edges: make(map[string]int)}
 		}
 		curNode := nodeMap[locations[0]]
 		curNode.edges[locations[1]] = dist
 
 		if nodeMap[locations[1]].name == "" {
-			nodeMap[locations[1]] = node{name: locations[1], edges:make(map[string]int)}
+			nodeMap[locations[1]] = node{name: locations[1], edges: make(map[string]int)}
 		}
 		curNode = nodeMap[locations[1]]
 		curNode.edges[locations[0]] = dist
 	}
 
-
 	var keys []string
-	for key := range(nodeMap){
+	for key := range nodeMap {
 		keys = append(keys, key)
 	}
-
 	fmt.Println(keys)
+	permutations := getPermutations(keys, len(keys))
+	fmt.Println(permutations)
+
+	var lowest int
+	for _, p := range permutations {
+		sum := 0
+		for i := 0; i < len(p)-1; i++ {
+			start := nodeMap[p[i]]
+			end := nodeMap[p[i+1]]
+			sum+= start.edges[end.name]
+		}
+		if lowest == 0 || sum > lowest {
+			lowest = sum 
+		}
+	}
+	fmt.Println(lowest)
+
 	// solve part 1 here
-	return 42
+	return lowest
 }
