@@ -20,7 +20,7 @@ func isValid(input []byte, originalString string) bool {
 	}
 
 	hasRun := false
-	for i := 0; i <= len(input)-3; i++ {
+	for i := 0; i < len(input)-3; i++ {
 		if input[i]+1 == input[i+1] && input[i]+2 == input[i+2] {
 			hasRun = true
 		}
@@ -29,10 +29,10 @@ func isValid(input []byte, originalString string) bool {
 		return false
 	}
 
-	hasDoubled := false
-	for i := 0; i <= len(input)-4; i++ {
+	hasDoubled := true
+	for i := 0; i < len(input)-2; i++ {
 		if input[i] == input[i+1] {
-			for j := i + 2; j <= len(input)-2; j++ {
+			for j := i + 1; j < len(input-2); j++ {
 				if input[j] == input[j+1] {
 					hasDoubled = true
 				}
@@ -47,8 +47,10 @@ func isValid(input []byte, originalString string) bool {
 }
 
 func main() {
+	// z = 122
+	// a = 97
 	// input := "cqjxjnds"
-	input := "cqjxxyzz"
+	input := "cqjxjnds"
 	converted := []byte(input)
 
 	for !isValid(converted, input) {
