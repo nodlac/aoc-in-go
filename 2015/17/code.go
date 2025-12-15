@@ -1,24 +1,62 @@
 package main
 
 import (
-	"github.com/jpillora/puzzler/harness/aoc"
+	"fmt"
 )
 
-func main() {
-	aoc.Harness(run)
+func getCombos(containers []int, combos *[][]int, listLength int) {
+	for l := listLength; l > 0; l-- {
+		for i := 0; i < l-1; i++ {
+			for j := i; j < l; j++ {
+				containers[i], containers[j] = containers[j], containers[i]
+				temp := make([]int, 0, l)
+				temp = copy(temp, containers)
+				*combos = append(*combos, temp)
+				containers[i], containers[j] = containers[j], containers[i]
+			}
+		}
+	}
 }
 
-// on code change, run will be executed 4 times:
-// 1. with: false (part1), and example input
-// 2. with: true (part2), and example input
-// 3. with: false (part1), and user input
-// 4. with: true (part2), and user input
-// the return value of each run is printed to stdout
-func run(part2 bool, input string) any {
-	// when you're ready to do part 2, remove this "not implemented" block
-	if part2 {
-		return "not implemented"
+func main() {
+	containerSizes := []int{
+		20, 15, 10, 5, 5,
+
+		// real sizes
+		// 43,
+		// 3,
+		// 4,
+		// 10,
+		// 21,
+		// 44,
+		// 4,
+		// 6,
+		// 47,
+		// 41,
+		// 34,
+		// 17,
+		// 17,
+		// 44,
+		// 36,
+		// 31,
+		// 46,
+		// 9,
+		// 27,
+		// 38,
 	}
-	// solve part 1 here
-	return 42
+
+	totalVariants := 1
+	for i := len(containerSizes); i > 1; i-- {
+		totalVariants *= i
+	}
+
+	combos := make([][]int, 0, totalVariants)
+
+	getCombos(containerSizes, &combos, len(containerSizes))
+
+	fmt.Println(combos)
+	//
+	// volume := 25
+	// volume := 150
+
 }
