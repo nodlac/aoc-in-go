@@ -4,20 +4,42 @@ import (
 	"fmt"
 )
 
-func getPermuts(containers []int, n int, combos *[][]int, positions int) {
-	for i := n; i < len(containers)-1; i++ {
-		for j := i + 1; j < len(containers); j++ {
-			containers[i], containers[j] = containers[j], containers[i]
-			temp := make([]int, positions)
-			copy(temp, containers)
+func getCombos(containers []int, combos *[][]int, slots int)  {
+	var current []int
+
+	var backtrack func(start int)
+	backtrack = func(start int) {
+		if len(current) == slots {
+			temp := make([]int, slots)
+			copy(temp, current)
 			*combos = append(*combos, temp)
-			if positions > 1 {
-				getPermuts(containers, n+1, combos, positions)
-			}
-			containers[i], containers[j] = containers[j], containers[i]
+			return
+		}
+
+		for i := start; i < len(containers); i++ {
+			current = append(current, containers[i])
+			backtrack(i + 1) // move forward only
+			current = current[:len(current)-1]
 		}
 	}
+
+	backtrack(0)
 }
+
+// func getPermuts(containers []int, n int, combos *[][]int, positions int) {
+// 	for i := n; i < len(containers)-1; i++ {
+// 		for j := i + 1; j < len(containers); j++ {
+// 			containers[i], containers[j] = containers[j], containers[i]
+// 			temp := make([]int, positions)
+// 			copy(temp, containers)
+// 			*combos = append(*combos, temp)
+// 			if positions > 1 {
+// 				getPermuts(containers, n+1, combos, positions)
+// 			}
+// 			containers[i], containers[j] = containers[j], containers[i]
+// 		}
+// 	}
+// }
 
 // func getValidPermuts(combos [][]int, volume int) [][]int {
 // 	// comboCopy := make([][]int, len(combos))
@@ -38,51 +60,55 @@ func getPermuts(containers []int, n int, combos *[][]int, positions int) {
 func main() {
 	containerSizes := []int{
 		// 20, 15, 10, 5, 5,
-		1, 2, 3,
+		// 1, 2, 3,
 
-		// real sizes
-		// 43,
-		// 3,
-		// 4,
-		// 10,
-		// 21,
-		// 44,
-		// 4,
-		// 6,
-		// 47,
-		// 41,
-		// 34,
-		// 17,
-		// 17,
-		// 44,
-		// 36,
-		// 31,
-		// 46,
-		// 9,
-		// 27,
-		// 38,
+		43,
+		3,
+		4,
+		10,
+		21,
+		44,
+		4,
+		6,
+		47,
+		41,
+		34,
+		17,
+		17,
+		44,
+		36,
+		31,
+		46,
+		9,
+		27,
+		38,
+
 	}
 
 	totalVariants := 0
-	for i := len(containerSizes); i > 0; i-- {
-		iterVars := 1
-		for j := len(containerSizes); j > (len(containerSizes) - i); j-- {
-			iterVars *= j
+	for k := len(containerSizes); k > 0; k-- {
+		iterNum := 1
+		iterDenum := 1
+		for n := len(containerSizes); n > k; n-- {
+			iterNum *= n
 		}
-		iterDenom
-		totalVariants += iterVars
+		for d := len(containerSizes)-k; d > 0; d-- {
+			iterDenum *= d
+		}
+
+		totalVariants += iterNum / iterDenum
 	}
 
+		
 	combos := make([][]int, 0, totalVariants)
 
 	for l := len(containerSizes); l > 0; l-- {
-		getPermuts(containerSizes, 0, &combos, l)
+		getCombos(containerSizes, &combos, l)
 	}
 
-	fmt.Println(combos)
 
-	volume := 5
-	// volume := 150
+	// volume := 25
+	volume := 150
 
 	validPermuts := 0
 	for _, v := range combos {
@@ -96,6 +122,8 @@ func main() {
 		}
 	}
 
-	fmt.Println(totalVariants)
-	fmt.Println(validPermuts)
+	fmt.Println(combos)
+	fmt.Println("len combos ", len(combos))
+	fmt.Println("total vars ", totalVariants)
+	fmt.Println("len validPermuts ", validPermuts)
 }
