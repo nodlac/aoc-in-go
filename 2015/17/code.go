@@ -110,20 +110,44 @@ func main() {
 	// volume := 25
 	volume := 150
 
-	validPermuts := 0
+	validCombos := make([][]int, totalVariants)
+	validCombosCount := 0
 	for _, v := range combos {
 		sum := 0
 		for _, c := range v {
 			sum += c
 		}
 		if sum == volume {
-			fmt.Println(v)
-			validPermuts += 1
+			// fmt.Println(v)
+			validCombos = append(validCombos, v)
+			validCombosCount += 1
 		}
 	}
 
-	fmt.Println(combos)
+	// fmt.Println(combos)
 	fmt.Println("len combos ", len(combos))
 	fmt.Println("total vars ", totalVariants)
-	fmt.Println("len validPermuts ", validPermuts)
+	fmt.Println("len validPermuts ", validCombosCount)
+
+	min := len(containerSizes)
+	count := 0
+	for _, v := range(validCombos) {
+		if len(v) > min {
+			continue
+		}
+		sum := 0
+		for _, c := range(v) {
+			sum += c
+		}
+		if sum != volume {
+			continue
+		}
+		vLen := len(v)
+		if vLen < min {
+			count = 0
+			min = vLen
+		} 
+		count ++
+	}
+	fmt.Println(count)
 }
